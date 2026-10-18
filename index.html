@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Misi Kantin Digital: Pemrograman Modular Python</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f3ec;--card:#fff;--tx:#1f2a2e;--mu:#5c6b70;--ac:#0f766e;--ac2:#fde68a;--ok:#15803d;--bad:#b91c1c;--code:#14232b;--cd:#e6f0ee;--bd:#d8d2c4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12191c;--card:#1b262a;--tx:#e8eeee;--mu:#9fb0b4;--ac:#2dd4bf;--ac2:#854d0e;--ok:#4ade80;--bad:#f87171;--code:#0b1215;--cd:#d6e8e5;--bd:#2c3b40}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Segoe UI",system-ui,Arial,sans-serif;line-height:1.55}
+main{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:1.3rem;margin:4px 0}h2{font-size:1.15rem;margin:0 0 8px}
+.bar{display:flex;gap:6px;margin:10px 0}.bar i{flex:1;height:8px;border-radius:4px;background:var(--bd)}.bar i.on{background:var(--ac)}
+.top{display:flex;justify-content:space-between;color:var(--mu);font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin:12px 0}
+.story{border-left:5px solid var(--ac);background:var(--card);padding:12px 14px;border-radius:10px;margin:12px 0}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--ac2);color:var(--tx)}
+pre{background:var(--code);color:var(--cd);padding:12px;border-radius:10px;overflow-x:auto;font:14px/1.6 Consolas,monospace;margin:8px 0;white-space:pre}
+pre .hl{background:rgba(250,204,21,.3);display:block}
+pre .pt{cursor:pointer;border-bottom:2px dotted #facc15;color:#fde68a}
+pre .pt.sel{background:#facc15;color:#14232b}
+button{font:inherit;cursor:pointer;border:1px solid var(--ac);background:transparent;color:var(--tx);border-radius:10px;padding:8px 14px;margin:3px}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.ok{background:var(--ok);color:#fff;border-color:var(--ok)}button.no{background:var(--bad);color:#fff;border-color:var(--bad)}
+button:disabled{opacity:.6;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:8px 0;border-bottom:1px dashed var(--bd)}
+.row>div:first-child{flex:1;min-width:230px}
+.fb{margin-top:8px;font-weight:600}.fb.ok{color:var(--ok)}.fb.no{color:var(--bad)}
+.vars{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.box{border:2px solid var(--ac);border-radius:10px;padding:6px 12px;text-align:center;min-width:90px}
+.box small{display:block;color:var(--mu);font-size:.75rem}.box b{font-size:1.1rem}
+.info{background:var(--ac2);color:var(--tx);border-radius:10px;padding:8px 12px;margin:8px 0;min-height:42px}
+input[type=range]{width:100%}textarea{width:100%;min-height:90px;font:inherit;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:10px;padding:8px}
+.two{display:grid;grid-template-columns:1fr;gap:8px}
+</style></head><body><main>
+<div class="top"><span>🍛 Misi Kantin Digital · Modular</span><span id="sc">Skor: 0</span></div>
+<div class="bar" id="bar"></div>
+<div id="stage"></div>
+</main>
+<script>
+const rp=n=>"Rp"+Math.round(n).toLocaleString("id-ID");
+const S={ch:0,score:0},TOT=11;
+const names=["Awal","Masalah","Anatomi","Fungsi/Prosedur","Program","Prinsip","Akhir"];
+const $=s=>document.getElementById(s);
+function bar(){$("bar").innerHTML=names.map((_,i)=>`<i class="${i<=S.ch?"on":""}"></i>`).join("");$("sc").textContent="Skor: "+S.score+"/"+TOT}
+function go(n){S.ch=n;bar();R[n]();scrollTo(0,0)}
+const nxt=(t="Lanjut ➜")=>`<button class="p" onclick="go(S.ch+1)">${t}</button>`;
+function quiz(id,opts,ci,exp,onDone){
+  $(id).innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o}</button>`).join("")+`<div class="fb" id="${id}f"></div>`;
+  let done=false;
+  $(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    if(done)return;const ok=+b.dataset.i===ci;
+    if(ok){done=true;b.classList.add("ok");S.score++;bar();$(id+"f").className="fb ok";$(id+"f").innerHTML="✅ Tepat! "+exp;onDone&&onDone()}
+    else{b.classList.add("no");b.disabled=true;$(id+"f").className="fb no";$(id+"f").textContent="Belum tepat, baca lagi dengan teliti."}
+  })}
+const R=[
+()=>{$("stage").innerHTML=`<h1>Misi Kantin Digital: Program Modular</h1>
+<div class="story">📖 Program kasir kantin Rani makin panjang dan berantakan. Rumus yang sama tertulis berulang-ulang. Bu Sari berkata: “Pecah programmu menjadi bagian-bagian kecil yang punya tugas masing-masing!”</div>
+<div class="card"><span class="tag">Tujuan Pembelajaran</span><p>Menjelaskan prinsip pemrograman modular dengan membuat <b>fungsi</b> atau <b>prosedur</b> dalam Python.</p>
+<p>5 bab: masalah kode berulang · anatomi fungsi · fungsi vs prosedur · menyusun program utama · prinsip modular. Total ${TOT} poin.</p></div>${nxt("Mulai misi 🚀")}`},
+
+()=>{$("stage").innerHTML=`<h2>Bab 1 · Masalah: Kode yang Berulang</h2><span class="tag">LITERASI</span>
+<div class="story">Rani menghitung tiga pesanan siswa dengan cara menulis rumus yang sama tiga kali. Perhatikan.</div>
+<div class="card"><pre>siswa1 = 2 * 12000 + 1 * 4000
+siswa2 = 1 * 12000 + 2 * 4000
+siswa3 = 3 * 12000 + 0 * 4000</pre>
+<p><b>Kasus:</b> harga nasi goreng naik menjadi Rp13.000. Berapa baris yang harus Rani ubah?</p><div id="q"></div><div id="fin"></div></div>`;
+quiz("q",["1 baris","3 baris","6 baris"],1,"Rumus tersebar di tiga tempat. Bagaimana jika ada 100 siswa?",()=>{
+$("fin").innerHTML=`<p>Solusinya: tulis rumus <b>sekali saja</b> sebagai fungsi, lalu panggil berkali-kali.</p>
+<pre>def hitung_total(nasi, es_teh):
+    return nasi * 13000 + es_teh * 4000
+
+siswa1 = hitung_total(2, 1)
+siswa2 = hitung_total(1, 2)
+siswa3 = hitung_total(3, 0)</pre><p>Sekarang harga cukup diubah di <b>1 tempat</b>. Inilah inti pemrograman modular.</p>`+nxt()})},
+
+()=>{const P={def:"<b>def</b> adalah kata kunci Python untuk mendefinisikan (membuat) sebuah fungsi.",nama:"<b>Nama fungsi</b>: pilih nama yang menjelaskan tugasnya, misalnya hitung_total.",par:"<b>Parameter</b>: wadah/variabel penerima data masuk. Nilai yang dikirim saat memanggil disebut <i>argumen</i>.",ret:"<b>return</b> mengembalikan hasil ke pemanggil fungsi, lalu fungsi berhenti."};
+$("stage").innerHTML=`<h2>Bab 2 · Anatomi Sebuah Fungsi</h2><span class="tag">NUMERASI + LITERASI</span>
+<div class="story">Klik bagian bertitik kuning untuk mempelajari fungsinya, lalu uji dengan memanggil fungsi.</div>
+<div class="card"><pre><span class="pt" data-k="def">def</span> <span class="pt" data-k="nama">hitung_total</span><span class="pt" data-k="par">(nasi, es_teh)</span>:
+    <span class="pt" data-k="ret">return</span> nasi * 12000 + es_teh * 4000</pre>
+<div class="info" id="inf">👆 Klik salah satu bagian kode.</div>
+Argumen nasi: <b id="vn">2</b> <input type="range" id="n" min="0" max="6" value="2">
+Argumen es teh: <b id="ve">1</b> <input type="range" id="e" min="0" max="6" value="1">
+<pre id="cl"></pre><div class="vars" id="vs"></div>
+<p><b>Soal 1.</b> Apa tugas <code>return</code>?</p><div id="q1"></div>
+<p><b>Soal 2.</b> Berapa hasil <code>hitung_total(3, 2)</code>?</p><div id="q2"></div><div id="fin"></div></div>`;
+document.querySelectorAll(".pt").forEach(s=>s.onclick=()=>{document.querySelectorAll(".pt").forEach(x=>x.classList.remove("sel"));s.classList.add("sel");$("inf").innerHTML=P[s.dataset.k]});
+const up=()=>{const n=+$("n").value,e=+$("e").value;$("vn").textContent=n;$("ve").textContent=e;
+$("cl").textContent=`hasil = hitung_total(${n}, ${e})\nprint(hasil)   # ${n*12000+e*4000}`;
+$("vs").innerHTML=[["nasi ←",n],["es_teh ←",e],["return →",rp(n*12000+e*4000)]].map(v=>`<div class="box"><small>${v[0]}</small><b>${v[1]}</b></div>`).join("")};
+$("n").oninput=$("e").oninput=up;up();let c=0;const f=()=>{if(++c==2)$("fin").innerHTML=nxt()};
+quiz("q1",["Mencetak teks ke layar","Mengembalikan hasil ke pemanggil fungsi","Mengulang kode"],1,"Hasil bisa disimpan ke variabel dan dipakai lagi.",f);
+quiz("q2",[rp(36000),rp(44000),rp(50000)],1,"3 × 12000 + 2 × 4000 = 36000 + 8000 = 44000.",f)},
+
+()=>{const it=[["def hitung_diskon(total):\n    return total * 0.1","Fungsi"],["def cetak_struk(total):\n    print(\"Total:\", total)","Prosedur"],["def sapa():\n    print(\"Selamat datang\")","Prosedur"],["def luas(p, l):\n    return p * l","Fungsi"]];
+$("stage").innerHTML=`<h2>Bab 3 · Fungsi atau Prosedur?</h2><span class="tag">LITERASI</span>
+<div class="story"><b>Fungsi</b> menghasilkan nilai (memakai <code>return</code>). <b>Prosedur</b> hanya melakukan suatu aksi, misalnya mencetak, tanpa mengembalikan nilai. Golongkan keempat kode ini.</div>
+<div class="card">${it.map((x,i)=>`<div class="row"><div><pre>${x[0].replace(/</g,"&lt;")}</pre></div><div id="q${i}"></div></div>`).join("")}<div id="fin"></div></div>`;
+let c=0;it.forEach((x,i)=>quiz("q"+i,["Fungsi","Prosedur"],x[1]=="Fungsi"?0:1,"",()=>{if(++c==4)$("fin").innerHTML=nxt()}))},
+
+()=>{$("stage").innerHTML=`<h2>Bab 4 · Menyusun Program Modular</h2><span class="tag">NUMERASI</span>
+<div class="story">Kini program kasir Rani terdiri dari tiga modul. Program utama hanya <b>memanggil</b> modul sesuai urutan. Atur pesanan, lalu jalankan langkah demi langkah.</div>
+<div class="card">Nasi: <b id="vn">3</b> <input type="range" id="n" min="0" max="6" value="3">
+Es teh: <b id="ve">2</b> <input type="range" id="e" min="0" max="6" value="2">
+<pre id="cd"></pre><div class="info" id="inf">Tekan tombol untuk menjalankan.</div>
+<button class="p" id="st">Langkah berikutnya ▶</button><button id="rs">Ulang</button>
+<p><b>Soal:</b> Diskon ternyata salah hitung. Fungsi mana yang harus diperiksa?</p><div id="q"></div><div id="fin"></div></div>`;
+let i=0;const L=["def hitung_total(n, e):","    return n * 12000 + e * 4000","","def hitung_diskon(t):","    return t * 0.1 if t > 30000 else 0","","def cetak_struk(t, d):","    print(\"Bayar:\", t - d)","","# program utama","total = hitung_total(NASI, ES)","diskon = hitung_diskon(total)","cetak_struk(total, diskon)"];
+const draw=()=>{const n=+$("n").value,e=+$("e").value,t=n*12000+e*4000,d=t>30000?t*.1:0;$("vn").textContent=n;$("ve").textContent=e;
+const H=[[],[10],[11],[12]][i]||[];const hs=i==1?[0,1,10]:i==2?[3,4,11]:i==3?[6,7,12]:[];
+$("cd").innerHTML=L.map((x,k)=>{x=x.replace("NASI",n).replace("ES",e).replace(/</g,"&lt;");return hs.includes(k)?`<span class="hl">${x||" "}</span>`:x}).join("\n");
+$("inf").innerHTML=["Tekan tombol untuk menjalankan.",`① Memanggil <b>hitung_total(${n}, ${e})</b> → total = <b>${rp(t)}</b>`,`② Memanggil <b>hitung_diskon(${t})</b> → diskon = <b>${rp(d)}</b>`,`③ Memanggil <b>cetak_struk</b> (prosedur) → tampil: Bayar: <b>${rp(t-d)}</b>`][i]};
+$("st").onclick=()=>{i=Math.min(i+1,3);draw()};$("rs").onclick=()=>{i=0;draw()};$("n").oninput=$("e").oninput=draw;draw();
+quiz("q",["hitung_total","hitung_diskon","cetak_struk"],1,"Karena tugasnya terpisah, kita langsung tahu letak masalahnya tanpa membaca semua kode.",()=>$("fin").innerHTML=nxt())},
+
+()=>{const it=[["Fungsi hitung_total dipakai di kasir 1, kasir 2, dan laporan harian.",0],["Tiga anggota tim mengerjakan fungsi yang berbeda secara bersamaan.",1],["Ada kesalahan diskon, cukup perbaiki satu fungsi tanpa mengubah yang lain.",2]];
+$("stage").innerHTML=`<h2>Bab 5 · Prinsip Pemrograman Modular</h2><span class="tag">LITERASI</span>
+<div class="story">Hubungkan setiap situasi dengan manfaat pemrograman modular yang paling sesuai.</div>
+<div class="card">${it.map((x,i)=>`<div class="row"><div>${x[0]}</div><div id="q${i}"></div></div>`).join("")}<div id="fin"></div></div>`;
+let c=0;it.forEach((x,i)=>quiz("q"+i,["Dipakai ulang","Kerja tim","Mudah diperbaiki"],x[1],"",()=>{if(++c==3)$("fin").innerHTML=nxt("Selesaikan misi 🏆")}))},
+
+()=>{const p=Math.round(S.score/TOT*100);$("stage").innerHTML=`<h1>Misi selesai! 🎉</h1>
+<div class="card"><p style="font-size:1.3rem">Skor: <b>${S.score}/${TOT}</b> (${p}%)</p></div>
+<div class="card"><b>Refleksi:</b> Jelaskan dengan kata-katamu sendiri apa itu pemrograman modular dan mengapa bermanfaat.
+<textarea id="tx" placeholder="Pemrograman modular adalah..."></textarea><button class="p" id="ck">Lihat contoh jawaban</button><div id="ex"></div></div>
+<button onclick="S.score=0;go(0)">Main lagi 🔁</button>`;
+$("ck").onclick=()=>$("ex").innerHTML=`<div class="info"><b>Contoh:</b> Pemrograman modular memecah program besar menjadi bagian kecil (fungsi atau prosedur) yang masing-masing punya satu tugas. Manfaatnya: kode tidak ditulis berulang, mudah dibaca dan diperbaiki, serta bisa dikerjakan bersama. Bandingkan dengan jawabanmu: apa yang sudah ada dan apa yang belum?</div>`}
+];
+go(0);
+</script></body></html>
